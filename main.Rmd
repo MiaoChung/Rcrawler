@@ -1,13 +1,10 @@
 ---
-title: "R Crawler"
+title: "R Crawler Week1"
 author: "Miao Chien"
-date: "2016/10/6"
+date: "2016/10/12"
 output:
   ioslides_presentation:
     highlight: espresso
-  slidy_presentation:
-    highlight: espresso
-    smaller: yes
     widescreen: yes
 ---
 
@@ -16,25 +13,26 @@ setwd("~/Dropbox/practice/Rcrawler")
 # knitr::opts_chunk$set()
 ```
 
-## 什麼是資料爬蟲（Crawler）
+## 什麼是網路爬蟲（Crawler）
+
+- 把你平常開瀏覽器查資料的步驟，寫程式讓它自動完成！
+
 - 大數據的時代，要如何「拿到資料」是最基本的起手式。
-- 我們不能永遠依靠「好心的市長」催促政府部門開放資料。
-
-
-## 爬蟲的原理
-* **模仿**人類的行為
 
 
 
-## 抓資料的基本流程：觀察、觀察、再觀察
+## 爬蟲的原理：**模仿** 人類的行為
 
-**目標：找出資料放在哪裡**
+目標：找出資料放在哪裡
 
 1. 找出資料藏在哪個 request 裡
     
 2. 觀察 request 的內容
    
 3. 拿取資料
+
+
+## 抓資料的基本流程：觀察、觀察、再觀察
 
 ![](img/User-Server.png)
    
@@ -184,169 +182,66 @@ Requests 很多，找不到怎麼辦？
      
       http://tw.ikanman.com/comic/1128/9771.html#p=3
 
+## 拿取資料：Data Parser
 
-# Let’s Rock with R!
+要如何從 Data Page 中取出 Data？
 
-## RStudio 
+### 用 DOM Selector (CSS/XPath)
 
-![](img/RStudio.png)
+## HTML 的樹狀結構與 DOM Selector
 
-## 所需套件
+![](img/html1.png)
 
-### Pipeline Coding
+## HTML 的樹狀結構與 DOM Selector
 
- - magrittr
+![](img/html2.png)
 
-### Crawler’s toolkits in R
+## HTML 的樹狀結構與 DOM Selector
 
- - rvest: a web scraper based on httr and xml2
- - httr: toolkit of HTTP methods in R
- - XML : XML parser
- - xml2: xml parser based on libxml2
-
-### data ETL
-
- - stringr: string manipulaiton
-
- - data.table: extension of data.frame, a powerful ETL tool in R
-
-## 安裝所需套件
-
-```{r, eval=FALSE}
-## === install required packages ===
-pkg_list <- c("magrittr", "httr", "rvest", "stringr", "data.table",
-              "jsonlite", "RSQLite", "devtools")
-pkg_new <- pkg_list[!(pkg_list %in% installed.packages()[,"Package"])]
-if(length(pkg_new)) install.packages(pkg_new)
-if("xmlview" %in% pkg_new) {devtools::install_github("hrbrmstr/xmlview")}
-if("data.table" %in% pkg_new) {
-    install.packages("data.table", type = "source",
-                      repos = "https://Rdatatable.github.io/data.table")
-} else if (packageDescription("data.table")$Version < "1.9.7") {
-    install.packages("data.table", type = "source",
-                      repos = "https://Rdatatable.github.io/data.table")
-}
-rm(pkg_new, pkg_list)
-```
+![](img/html3.png)
 
 
-## 好用套件介紹： [magrittr](https://cran.r-project.org/web/packages/magrittr/magrittr.pdf)
+## DOM Selector： CSS Selector
 
-![](img/magrittr.png)
+安裝 Chrome extension [SelectorGadget](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb/related?hl=zh-TW)
+
+範例：[pchome商品](http://ecshweb.pchome.com.tw/search/v3.3/?q=apple)
+
+Chrome Console: `document.querySelectorAll("CSS Selector")`
 
 
-## 好用套件介紹： [magrittr](https://cran.r-project.org/web/packages/magrittr/magrittr.pdf)
+## DOM Selector： XPath Selector
 
-![](img/magrittr2.png)
+安裝 Chrome extension [XPath Helper](https://chrome.google.com/webstore/detail/xpath-helper/hgimnogjllphhhkhlmebbmlgjoejdpjl?hl=zh-TW)
 
-- 把左手邊的參數用 **pipeline** 「 %>% 」傳送到右手邊的函式中
+範例：[露天拍賣](http://search.ruten.com.tw/search/s000.php?enc=u&searchfrom=indexbar&k=apple&t=0)
 
-- Use the dot  **.**   as placeholder in a expression.
+Chrome Console: `$x("XPath Selector")`
 
-    + x %>% f is equivalent to f(x)
-    
-    + x %>% f(y) is equivalent to f(x, y)
-  
-    + x %>% f %>% g %>% h is equivalent to h(g(f(x)))
+## HOMEWORK
 
-    + x %>% f(y, .) is equivalent to f(y, x)
+請安裝：
 
-    + x %>% f(y, z = .) is equivalent to f(y, z = x)
+* 安裝 [RStudio](https://www.rstudio.com/products/rstudio/download3/)
 
-## 好用套件介紹： [magrittr](https://cran.r-project.org/web/packages/magrittr/magrittr.pdf)
+* 執行 [install_packages.R](https://www.dropbox.com/s/68bs5yue0m7un2u/install_packages.R?dl=0) 以安裝所需套件
 
-舉例：
+## HOMEWORK
 
-```{r, eval=FALSE}
-a = 1:3
-df = data.frame(a, b=a^2)
-rownames(df) = LETTERS[1:3]
-vals = lm(b ~ a, data = df)
+對 R 不熟的人請閱讀：
 
-```
+* Quick-R：[data type](http://www.statmethods.net/input/datatypes.html)
 
-pipe chain 版本
+* （中文）醫學統計與 R ：[第二章](http://web.ntpu.edu.tw/~cflin/Teach/R/R06C02DataBasic.pdf)、[第三章](http://web.ntpu.edu.tw/~cflin/Teach/R/R06EN03Object.pdf)
 
-```{r}
-library(magrittr)
+      + Note: 特別注意 vector, data frame, list 的使用方式
 
-vals = 1:3 %>% data.frame(a = ., b = .^2) %>% 
-  set_rownames(LETTERS[1:3]) %>% lm(b ~ a, data = .)
+## HOMEWORK
 
-```
+有空的人可以：
 
-<!-- ## 好用套件介紹： [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf) -->
+* 玩玩 [CSS Selector](http://flukeout.github.io/)
 
-<!-- ![](img/datatable.png) -->
-
-<!-- - 取代內建 data.frame 的好工具 -->
-
-<!-- - 運算效率高、節省記憶體 -->
-
-<!-- - 資料選取方便 -->
-
-<!-- ## 好用套件介紹： [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf) -->
-
-<!-- ```{r, warning=FALSE} -->
-<!-- library(data.table) -->
-
-<!-- DT = data.table(mtcars) -->
-<!-- DT %<>% data.table(name = rownames(mtcars), .)  -->
-
-<!-- ``` -->
-
-<!-- ## 好用套件介紹： [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf) -->
-
-<!-- ```{r} -->
-<!-- DT[cyl == 8] -->
-<!-- ``` -->
-
-<!-- ## 好用套件介紹： [data.table](https://cran.r-project.org/web/packages/data.table/data.table.pdf) -->
-
-<!-- ```{r} -->
-<!-- rr= DT[,.(Issue, Project, Date)] %>% .[,Date := factor(Date, levels=seq.date)] -->
-
-<!-- r =  -->
-<!--   rr[,.(Date=levels(Date), Count=c(table(Date))), by=.(Issue, Project)] %>% -->
-<!--   .[,.(Issue, Project, Date = Date %>% as.Date, Count)] %>% -->
-<!--   .[order(match(Issue, issue_table$Issue))] -->
-<!-- DT %>% .[,.(gear=gl(gear))] %>% .[,.(V1 = .N, by=gear)] -->
-<!-- ``` -->
-
-## 再看一次爬蟲流程
-
-![](img/User-Server.png)
-
-## 再看一次爬蟲流程
-
-**1. Data**：找出資料藏在哪個 request 裡
-
-    + 找到資料頁，想像資料要長什麼樣子，設想產出的資料格式(schema)
-    
-**2. Connector**：觀察 request 的內容
-
-    + 觀察網頁內容，找到資料所在的request/response，再一層層往上解析，套上判斷式及迴圈, 完成爬蟲的自動化
-   
-**3. Parser**：用 R 拿取資料
-
-**4. Data**：解析所得資料
-
-    + 透過正規表示式 （Regular Expression）抽取想要資料、整理資料表......
-
-## Connection: GET Method
-
-起手式
-```{r, eval=FALSE}
-library(httr)
-res <- GET(
-  url = "http://httpbin.org/get",
-  add_headers(a = 1, b = 2),
-  set_cookies(c = 1, d = 2),
-  query = list(q="hihi")
-)
-content(res, as = "text", encoding = "UTF-8")
-content(res, as = "parsed", encoding = "UTF-8")
-```
-
+* 玩玩 [Regular Expressions](https://regexone.com/)
 
 
